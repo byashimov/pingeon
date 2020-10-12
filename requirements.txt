@@ -1,0 +1,4 @@
+httpx~=0.16.0
+aiokafka~=0.6.0
+orjson~=3.4
+asyncpg~=0.21.0
