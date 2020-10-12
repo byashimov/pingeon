@@ -8,8 +8,9 @@ cache:
     - $HOME/.cache/pip
 install:
   - travis_retry pip install tox-travis codecov
+  - pip install -r test-requirements.txt -r requirements.txt
 script:
-  - tox
+  - make test
 after_success:
   - coverage report
   - codecov
