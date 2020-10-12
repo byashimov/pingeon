@@ -1,4 +1,7 @@
-# Pingeon 
+# Pingeon
+
+[![Build Status](https://travis-ci.org/byashimov/pingeon.svg?branch=master)](https://travis-ci.org/byashimov/pingeon)
+[![codecov](https://codecov.io/gh/byashimov/pingeon/branch/master/graph/badge.svg)](https://codecov.io/gh/byashimov/pingeon) 
 
 A pinging project.
 
@@ -14,7 +17,7 @@ A pinging project.
                  |              |||           |              '|'
 ```
 
-[Copyright](https://www.oocities.org/spunk1111/birds.htm)
+ASCII [Copyright](https://www.oocities.org/spunk1111/birds.htm)
 
 
 ## Installation
@@ -24,11 +27,6 @@ todo: put some instructions here.
 ```bash
 $ pip install -e git://github.com/byashimov/pingeon.git#egg=pingeon
 ```
-
-## License
-
-todo:
-
 
 ## Project architecture 
 
