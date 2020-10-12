@@ -22,7 +22,7 @@ A pinging project.
 todo: put some instructions here.
 
 ```bash
-$ git install <repository>
+$ pip install -e git://github.com/byashimov/pingeon.git#egg=pingeon
 ```
 
 ## License

@@ -1,0 +1,15 @@
+language: python
+sudo: required
+dist: xenial
+python:
+  - "3.7"
+cache:
+  directories:
+    - $HOME/.cache/pip
+install:
+  - travis_retry pip install tox-travis codecov
+script:
+  - tox
+after_success:
+  - coverage report
+  - codecov
