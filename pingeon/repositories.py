@@ -15,7 +15,7 @@ class BaseKafka:
     async def __aenter__(self) -> None:
         await self.client.start()
 
-    async def __aexit__(self, exc_type, exc_val, exc_tb):
+    async def __aexit__(self, exc_type, exc_val, exc_tb) -> None:
         await self.client.stop()
 
 
@@ -49,15 +49,18 @@ class Postgres:
     host: str = "127.0.0.1"
     conn: asyncpg.Connection = field(init=False)
 
-    async def __aenter__(self) -> None:
-        self.conn: asyncpg.Connection = await asyncpg.connect(
-            user="user",
-            password="password",
-            database="database",
-            host="127.0.0.1",
+    async def get_connection(self) -> asyncpg.Connection:
+        return await asyncpg.connect(
+            user=self.user,
+            password=self.password,
+            database=self.database,
+            host=self.host,
         )
 
-    async def __aexit__(self, exc_type, exc_val, exc_tb):
+    async def __aenter__(self) -> None:
+        self.conn = await self.get_connection()
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb) -> None:
         await self.conn.close()
 
     async def save(self, obj: Log):
@@ -67,13 +70,11 @@ class Postgres:
 
         # fixme: prepared statement doesn't work with pgbouncer
         await self.conn.execute(
-            """
-            INSERT INTO logs 
-                (uid, label, status, start_time, end_time, result) 
-            VALUES ($1, $2, $3, to_timestamp($4), to_timestamp($5), $6 
-            ON CONFLICT ON CONSTRAINT log_key
-            DO NOTHING;
-            """,
+            "INSERT INTO logs "
+            "(uid, label, status, start_time, end_time, result) "
+            "VALUES ($1, $2, $3, to_timestamp($4), to_timestamp($5), $6) "
+            "ON CONFLICT ON CONSTRAINT log_key "
+            "DO NOTHING;",
             obj.uid,
             obj.label,
             obj.status,

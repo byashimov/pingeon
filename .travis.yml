@@ -7,7 +7,7 @@ cache:
   directories:
     - $HOME/.cache/pip
 install:
-  - travis_retry pip install tox-travis codecov
+  - travis_retry pip install codecov
   - pip install -r test-requirements.txt -r requirements.txt
 script:
   - make test

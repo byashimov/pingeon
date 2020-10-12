@@ -12,9 +12,9 @@ class Status(str, Enum):
 
 @dataclass
 class Log:
-    uid: str = field(init=False, default_factory=lambda: uuid4().hex)
     label: str
     status: Status
     start_time: float
     end_time: float
     result: Dict[str, Union[str, int]]
+    uid: str = field(default_factory=lambda: uuid4().hex)
