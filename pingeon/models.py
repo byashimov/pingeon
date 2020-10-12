@@ -5,8 +5,9 @@ from uuid import uuid4
 
 
 class Status(str, Enum):
-    SUCCESS = "success"
-    FAILED = "failed"
+    OK = "ok"
+    ERROR = "error"
+    FATAL = "fatal"
 
 
 @dataclass

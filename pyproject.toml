@@ -8,15 +8,15 @@ line_length = 88
 
 [tool.isort]
 profile = "black"
-skip=".tox"
+skip = ".tox"
+
+[tool.coverage.run]
+source = ["pingeon"]
+
+[tool.coverage.report]
+omit = ["tests"]
+show_missing = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 flake8-max-line-length = 88
-addopts = """
-    -v
-    -rs
-    --cov=typus
-    --cov-report=term-missing
-    --isort
-"""
