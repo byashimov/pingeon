@@ -69,13 +69,13 @@ class Postgres:
         await self.conn.execute(
             """
             INSERT INTO logs 
-                (key, function, status, start_time, end_time, result) 
+                (uid, label, status, start_time, end_time, result) 
             VALUES ($1, $2, $3, to_timestamp($4), to_timestamp($5), $6 
             ON CONFLICT ON CONSTRAINT log_key
             DO NOTHING;
             """,
-            obj.key,
-            obj.function,
+            obj.uid,
+            obj.label,
             obj.status,
             obj.start_time,
             obj.end_time,

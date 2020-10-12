@@ -1,6 +1,7 @@
 import asyncio
 import logging
-from typing import Any, Awaitable, Callable, Dict, List
+from itertools import starmap
+from typing import Any, Awaitable, Callable, Dict
 
 from .checkers import CheckError
 from .models import Log, Status
@@ -11,9 +12,9 @@ logger = logging.getLogger(__name__)
 Checker = Callable[[], Awaitable[Dict[str, Any]]]
 
 
-async def producer(kafka: KafkaProducer, checkers: List[Checker]):
+async def producer(kafka: KafkaProducer, checkers: Dict[str, Checker]):
     results = await asyncio.gather(
-        *[check(c) for c in checkers],
+        *starmap(check, checkers.items()),
         # Isolates checkers exceptions
         return_exceptions=True,
     )
@@ -27,7 +28,7 @@ async def producer(kafka: KafkaProducer, checkers: List[Checker]):
                 await kafka.send(item)
 
 
-async def check(func: Checker) -> Log:
+async def check(label: str, func: Checker) -> Log:
     start_time = utcnow()
     try:
         result = await func()
@@ -44,7 +45,7 @@ async def check(func: Checker) -> Log:
         end_time = utcnow()
 
     return Log(
-        function=func.__name__,
+        label=label,
         status=status,
         start_time=start_time,
         end_time=end_time,
