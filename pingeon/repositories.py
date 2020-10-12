@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import AsyncIterator, Union
+from typing import AsyncIterator, Optional, Union
 
 import asyncpg
 import orjson
@@ -22,7 +22,13 @@ class BaseKafka:
 @dataclass
 class KafkaProducer(BaseKafka):
     topic: str
-    client: AIOKafkaProducer
+    address: str = "localhost"
+    client: AIOKafkaProducer = field(init=False)
+
+    def __post_init__(self):
+        self.client = AIOKafkaProducer(
+            bootstrap_servers=self.address,
+        )
 
     async def send(self, obj: Log) -> None:
         # todo: add reconnects, statsd
@@ -33,7 +39,16 @@ class KafkaProducer(BaseKafka):
 @dataclass
 class KafkaConsumer(BaseKafka):
     topic: str
-    client: AIOKafkaConsumer
+    address: str = "localhost"
+    group_id: Optional[str] = None
+    client: AIOKafkaConsumer = field(init=False)
+
+    def __post_init__(self):
+        self.client = AIOKafkaConsumer(
+            self.topic,
+            bootstrap_servers=self.address,
+            group_id=self.group_id,
+        )
 
     async def read(self) -> AsyncIterator[Log]:
         # todo: add reconnects, statsd
@@ -47,6 +62,7 @@ class Postgres:
     password: str = "password"
     database: str = "database"
     host: str = "127.0.0.1"
+    port: Union[str, int] = 5432
     conn: asyncpg.Connection = field(init=False)
 
     async def get_connection(self) -> asyncpg.Connection:
@@ -55,6 +71,7 @@ class Postgres:
             password=self.password,
             database=self.database,
             host=self.host,
+            port=int(self.port),
         )
 
     async def __aenter__(self) -> None:
@@ -63,13 +80,16 @@ class Postgres:
     async def __aexit__(self, exc_type, exc_val, exc_tb) -> None:
         await self.conn.close()
 
+    async def execute(self, query: str, *args, timeout: float = None) -> str:
+        return await self.conn.execute(query, *args, timeout)
+
     async def save(self, obj: Log):
         """
-        Saves log idempotent
+        Saves log idempotent, kafka is about at least one delivery
         """
 
         # fixme: prepared statement doesn't work with pgbouncer
-        await self.conn.execute(
+        await self.execute(
             "INSERT INTO logs "
             "(uid, label, status, start_time, end_time, result) "
             "VALUES ($1, $2, $3, to_timestamp($4), to_timestamp($5), $6) "

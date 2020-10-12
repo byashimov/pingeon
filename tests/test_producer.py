@@ -11,10 +11,11 @@ from pingeon import KafkaProducer, producer, site_check
 pytestmark = pytest.mark.asyncio
 
 
-async def test_producer_with_site_check(httpx_mock):
+async def test_producer_with_site_check(httpx_mock, monkeypatch):
     httpx_mock.add_response(status_code=200, data="wassup!")
     mock_kafka = Mock(spec=AIOKafkaProducer)
-    kafka = KafkaProducer(topic="topic", client=mock_kafka)
+    kafka = KafkaProducer(topic="topic")
+    monkeypatch.setattr(kafka, "client", mock_kafka)
     checkers = {"site_check": partial(site_check, "http://foo", "sup")}
     await producer(kafka, checkers)
 

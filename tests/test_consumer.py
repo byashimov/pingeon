@@ -22,15 +22,17 @@ async def test_consumer(monkeypatch):
     async def aiter(_):
         yield orjson.dumps(log)
 
+    kafka = KafkaConsumer(topic="foo")
     mock_kafka = Mock(spec=AIOKafkaConsumer)
     mock_kafka.__aiter__ = aiter
+    monkeypatch.setattr(kafka, "client", mock_kafka)
     mock_postgres = Mock(spec=asyncpg.Connection)
 
     async def get_connection(_):
         return mock_postgres
 
     monkeypatch.setattr(Postgres, "get_connection", get_connection)
-    await consumer(KafkaConsumer(topic="foo", client=mock_kafka), Postgres())
+    await consumer(kafka, Postgres())
 
     mock_postgres.execute.assert_called_once_with(
         "INSERT INTO logs "
@@ -43,4 +45,5 @@ async def test_consumer(monkeypatch):
         0.1,
         0.2,
         {"foo": 0},
+        None,
     )
