@@ -28,6 +28,50 @@ todo: put some instructions here.
 $ pip install -e git://github.com/byashimov/pingeon.git#egg=pingeon
 ```
 
-## Project architecture 
+## Project architecture
 
-todo:
+Most interfaces are just `func()` calls,
+so components are not tied up and can be replaced any time.
+
+```bash                                        
+                                                                     
+ 1. Consumer                                                        
+ ===========                                                        
+                                                                    
+ +---------------+        +--------------+       +-----------------+
+ |               | func() |              |       |                 |
+ |  Regular job  | -----> |   Producer   | ----> |  Kafka producer |
+ |               |        |              |       |                 |
+ +---------------+        +--------------+       +-----------------+
+                                 ^                                  
+                                 |  func()                          
+                          +--------------+                          
+                          |   +--------+ |   Create logs            
+                          |   | check  | |   with unique UUID       
+                          |   +--------+ |                          
+                          |              |                          
+                          |   +-------+  |                          
+                          |   | check |  |                          
+                          |   +-------+  |                          
+                          +--------------+                          
+                                                                    
+                                   ---------------------------------
+ ---------------------------------/                                 
+                                                                    
+ 2. Producer                                                        
+ ===========                                                        
+                                                                    
+ +---------------+        +--------------+       +-----------------+
+ |               | func() |              |       |                 |
+ |  Regular job  | -----> |   Consumer   | <---- |  Kafka consumer |
+ |               |        |              |       |                 |
+ +---------------+        +--------------+       +-----------------+
+                                 |                                  
+                                 V                                  
+                         +-----------------+                        
+     INSERT              |                 |                        
+     ON CONFLICT UUID    |    Postgres     |                        
+     DO NOTHING          |     Client      |                        
+     PARTITION BY RANGE  |                 |                        
+                         +-----------------+                        
+```

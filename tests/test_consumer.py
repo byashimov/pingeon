@@ -38,7 +38,7 @@ async def test_consumer(monkeypatch):
         "INSERT INTO logs "
         "(uid, label, status, start_time, end_time, result) "
         "VALUES ($1, $2, $3, to_timestamp($4), to_timestamp($5), $6) "
-        "ON CONFLICT ON CONSTRAINT log_key DO NOTHING;",
+        "ON CONFLICT ON CONSTRAINT uid_key DO NOTHING;",
         "48d1a776bb9c4aec9b94c8ab3f446e04",
         "wow!",
         "ok",

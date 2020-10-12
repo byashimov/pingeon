@@ -93,7 +93,7 @@ class Postgres:
             "INSERT INTO logs "
             "(uid, label, status, start_time, end_time, result) "
             "VALUES ($1, $2, $3, to_timestamp($4), to_timestamp($5), $6) "
-            "ON CONFLICT ON CONSTRAINT log_key "
+            "ON CONFLICT ON CONSTRAINT uid_key "
             "DO NOTHING;",
             obj.uid,
             obj.label,

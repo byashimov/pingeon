@@ -18,6 +18,10 @@ pytestmark = pytest.mark.asyncio
 
 @pytest.mark.skip(reason="Not ready yet")
 async def test_integration(event_loop):
+    """
+    This test is mostly looks like a main() program.
+    """
+
     sentinel = event_loop.create_future()
     postgres = Postgres()
 
@@ -32,7 +36,7 @@ async def test_integration(event_loop):
                 end_time TIMESTAMP NOT NULL,
                 result JSONB NOT NULL 
             ) PARTITION BY RANGE (start_time::date)
-        """
+            """
         )
 
     consume = partial(
