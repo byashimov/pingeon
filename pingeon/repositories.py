@@ -80,16 +80,13 @@ class Postgres:
     async def __aexit__(self, exc_type, exc_val, exc_tb) -> None:
         await self.conn.close()
 
-    async def execute(self, query: str, *args, timeout: float = None) -> str:
-        return await self.conn.execute(query, *args, timeout)
-
     async def save(self, obj: Log):
         """
         Saves log idempotent, kafka is about at least one delivery
         """
 
         # fixme: prepared statement doesn't work with pgbouncer
-        await self.execute(
+        await self.conn.execute(
             "INSERT INTO logs "
             "(uid, label, status, start_time, end_time, result) "
             "VALUES ($1, $2, $3, to_timestamp($4), to_timestamp($5), $6) "

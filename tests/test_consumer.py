@@ -45,5 +45,4 @@ async def test_consumer(monkeypatch):
         0.1,
         0.2,
         {"foo": 0},
-        None,
     )
