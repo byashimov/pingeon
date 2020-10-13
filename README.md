@@ -22,8 +22,6 @@ ASCII [Copyright](https://www.oocities.org/spunk1111/birds.htm)
 
 ## Installation
 
-todo: put some instructions here.
-
 ```bash
 $ pip install -e git://github.com/byashimov/pingeon.git#egg=pingeon
 ```
@@ -32,7 +30,7 @@ $ pip install -e git://github.com/byashimov/pingeon.git#egg=pingeon
 
 ```bash                                        
                                                                      
- 1. Consumer                                                        
+ 1. Producer                                                        
  ===========                                                        
                                                                     
  +---------------+        +--------------+       +-----------------+
@@ -55,7 +53,7 @@ $ pip install -e git://github.com/byashimov/pingeon.git#egg=pingeon
                                    ---------------------------------
  ---------------------------------/                                 
                                                                     
- 2. Producer                                                        
+ 2. Consumer                                                        
  ===========                                                        
                                                                     
  +---------------+        +--------------+       +-----------------+
@@ -68,7 +66,7 @@ $ pip install -e git://github.com/byashimov/pingeon.git#egg=pingeon
                          +-----------------+                        
      INSERT              |                 |                        
      ON CONFLICT UID     |    Postgres     |                        
-     DO NOTHING          |     Client      |                        
+     DO NOTHING          |     client      |                        
      PARTITION BY RANGE  |                 |                        
                          +-----------------+                        
 ```
