@@ -76,8 +76,8 @@ $ pip install -e git://github.com/byashimov/pingeon.git#egg=pingeon
 Project contains several components:
 
 1. A regular job `worker`. Runs given `func` every given `interval` in seconds
-1. `producer` which run any amount of "checkers" 
-   and save those result as a labeled "Log" with an unique uid to Kafka
+1. `producer` which run any amount of `checkers` 
+   and save those result as a labeled `Log` with an unique uid to Kafka
 1. "Checkers" are just regular functions      
 1. `consumer` is also run by `worker`, reads Kafka topic 
    and saves data to partitioned table in Postgres.
